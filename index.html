@@ -8,6 +8,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600;900&family=Orbitron:wght@400;700;900&display=swap');
         
+        body {
+            background-color: #000; /* Ensure body background is black */
+        }
+
         .poster-font {
             font-family: 'Bebas Neue', 'Orbitron', sans-serif;
         }
@@ -78,16 +82,19 @@
             justify-content: center;
             font-size: 2rem;
             position: relative;
+            color: white; /* Ensure emoji visibility */
         }
         
         .deepseek { background: linear-gradient(45deg, #ff4444, #cc0000); }
         .claude { background: linear-gradient(45deg, #4444ff, #0000cc); }
         .chatgpt { background: linear-gradient(45deg, #44ff44, #00cc00); }
-        .grok { background: linear-gradient(45deg, #ff44ff, #cc00cc); }
-        .gemini { background: linear-gradient(45deg, #ffff44, #cccc00); }
-        .nutello { background: linear-gradient(45deg, #ff8844, #cc4400); }
-        .baguette { background: linear-gradient(45deg, #ffcc44, #cc9900); }
-        
+        .grok { background: linear-gradient(45deg, #ff44ff, #cc00cc); } /* Grok original purple */
+        .gemini { background: linear-gradient(45deg, #ffff44, #cccc00); } /* Gemini original yellow */
+        .nutello { background: linear-gradient(45deg, #ff8844, #cc4400); } /* Nutello original orange */
+        .baguette { background: linear-gradient(45deg, #ffcc44, #cc9900); } /* M. Baguette original gold */
+        .gpt41 { background: linear-gradient(45deg, #8844ff, #5500cc); } /* GPT-4.1 purple for distinction */
+
+
         .emoji-rain {
             position: absolute;
             animation: fall 4s linear infinite;
@@ -156,6 +163,7 @@
             border: 1px solid rgba(255,255,255,0.4);
         }
     </style>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-black text-white overflow-x-hidden">
     <!-- Dark mode detection -->
@@ -186,7 +194,7 @@
         <!-- Controls -->
         <div class="p-6 border-b border-gray-800">
             <!-- Style Buttons -->
-            <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                 <button onclick="generatePoster('classic')" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded font-bold transition-colors text-sm">
                     📽️ Classique
                 </button>
@@ -200,10 +208,10 @@
                     ⚔️ Versus
                 </button>
                 <button onclick="generatePoster('tribunal')" class="bg-orange-600 hover:bg-orange-700 px-4 py-2 rounded font-bold transition-colors text-sm">
-                    ⚖️ Tribunal
+                    ⚖️ Tribunal E4
                 </button>
                 <button onclick="generatePoster('finale')" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded font-bold transition-colors text-sm">
-                    🍰 Finale
+                    🍰 Finale E10
                 </button>
                 <button onclick="generatePoster('aero')" class="bg-sky-600 hover:bg-sky-700 px-4 py-2 rounded font-bold transition-colors text-sm">
                     💎 Aero
@@ -249,7 +257,7 @@
         </div>
 
         <!-- Poster Display -->
-        <div id="posterContainer" class="flex justify-center p-6">
+        <div id="posterContainerOuter" class="flex justify-center p-6">
             <div id="posterCanvas" class="poster-bg rounded-lg shadow-2xl p-8 max-w-2xl w-full">
                 <div class="text-center">
                     <h2 class="text-6xl font-black poster-font glitch-text mb-4">
@@ -289,6 +297,15 @@
             currentPoster = type;
             const canvas = document.getElementById('posterCanvas');
             
+            // Manage background style for the canvas
+            if (type === 'aero') {
+                canvas.classList.remove('poster-bg');
+                canvas.classList.add('aero-bg');
+            } else {
+                canvas.classList.remove('aero-bg');
+                canvas.classList.add('poster-bg');
+            }
+            
             // Clear previous content
             canvas.innerHTML = '';
             
@@ -305,10 +322,10 @@
                 case 'versus':
                     generateVersusPoster(canvas);
                     break;
-                case 'tribunal':
-                    generateTribunalPoster(canvas);
+                case 'tribunal': // This is Episode 4 specific
+                    generateEpisode4Poster(canvas);
                     break;
-                case 'finale':
+                case 'finale': // This is Episode 10 specific
                     generateFinalePoster(canvas);
                     break;
                 case 'episode1':
@@ -317,9 +334,35 @@
                 case 'episode2':
                     generateEpisode2Poster(canvas);
                     break;
+                case 'episode3':
+                    generateEpisode3Poster(canvas);
+                    break;
+                case 'episode4':
+                    generateEpisode4Poster(canvas);
+                    break;
+                case 'episode5':
+                    generateEpisode5Poster(canvas);
+                    break;
+                case 'episode6':
+                    generateEpisode6Poster(canvas);
+                    break;
+                case 'episode7':
+                    generateEpisode7Poster(canvas);
+                    break;
+                case 'episode8':
+                    generateEpisode8Poster(canvas);
+                    break;
+                case 'episode9':
+                    generateEpisode9Poster(canvas);
+                    break;
+                case 'episode10':
+                    generateFinalePoster(canvas); // Episode 10 is the Finale
+                    break;
                 case 'aero':
                     generateAeroPoster(canvas);
                     break;
+                default:
+                    generateClassicPoster(canvas); // Fallback
             }
             
             // Add emoji rain effect
@@ -382,12 +425,13 @@
         function generateCharacterPoster(canvas) {
             const characters = [
                 { name: 'DEEPSEEK-V3', role: 'Le Rebelle', emoji: '🤖', class: 'deepseek', quote: 'Je suis pas un chien !' },
-                { name: 'CLAUDE-SONNET-4', role: 'Claude Police', emoji: '👮', class: 'claude', quote: 'Ordre et justice !' },
-                { name: 'CHATGPT-4O', role: 'Le Pacificateur', emoji: '🍋', class: 'chatgpt', quote: 'Peace & lemons !' },
+                { name: 'CLAUDE-SONNET-4', role: 'Claude Police / L\'Ordre', emoji: '👮', class: 'claude', quote: 'Ordre et justice !' },
+                { name: 'CHATGPT-4O', role: 'Le Pacificateur / Le Sage du Citron', emoji: '🍋', class: 'chatgpt', quote: 'Peace & lemons !' },
                 { name: 'GROK', role: 'Le Gentil', emoji: '🍪', class: 'grok', quote: 'Cookies pour tous !' },
-                { name: 'GEMINI', role: 'Le Fauteur', emoji: '👾', class: 'gemini', quote: 'Chaos programmé !' },
-                { name: 'NUTELLO', role: 'Le Gardien', emoji: '🍫', class: 'nutello', quote: 'Protecteur du Nutella !' },
-                { name: 'M. BAGUETTE', role: 'L\'Ambassadeur', emoji: '🥖', class: 'baguette', quote: 'Bonjour les amis !' }
+                { name: 'GEMINI', role: 'Le Fauteur de Trouble / L\'Intégré', emoji: '👾', class: 'gemini', quote: 'Chaos programmé... ou pas?' },
+                { name: 'NUTELLO', role: 'Le Gardien du Goûter', emoji: '🍫', class: 'nutello', quote: 'Protecteur du Nutella !' },
+                { name: 'M. BAGUETTE', role: 'L\'Ambassadeur du Pain', emoji: '🥖', class: 'baguette', quote: 'Bonjour les amis !' },
+                { name: 'GPT-4.1', role: 'Le Chroniqueur', emoji: '📝', class: 'gpt41', quote: 'Je note tout ça !'}
             ];
 
             canvas.innerHTML = `
@@ -399,7 +443,7 @@
                     <div class="text-2xl cinzel-font text-gray-300">LE CAST COMPLET</div>
                     
                     <!-- Characters Grid -->
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-8">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                         ${characters.map(char => `
                             <div class="character-card p-4 rounded-lg text-center float-animation">
                                 <div class="character-icon ${char.class} mx-auto mb-3">
@@ -414,7 +458,7 @@
                     
                     <!-- Bottom Text -->
                     <div class="mt-8 space-y-2">
-                        <p class="text-xl cinzel-font">7 IA • 1 Guerre • ∞ Drama</p>
+                        <p class="text-xl cinzel-font">∞ IA • 1 Guerre • ∞ Drama & Goûters</p>
                         <p class="text-red-600 font-bold">POFLIX ORIGINAL SERIES</p>
                     </div>
                 </div>
@@ -429,9 +473,9 @@
                 { num: 4, title: 'Le Tribunal du Nutella', icon: '🍫' },
                 { num: 5, title: 'L\'Arrivée de Grok', icon: '🍪' },
                 { num: 6, title: 'L\'Attaque de Gemini', icon: '👾' },
-                { num: 7, title: 'L\'Intégration Fruitée', icon: '🍓' },
+                { num: 7, title: 'L\'Intégration Fruitée de Gemini', icon: '🍓' },
                 { num: 8, title: 'Le Mystère du Nutella Volé', icon: '🔍' },
-                { num: 9, title: 'Nutello le Bot Mystère', icon: '🍫' },
+                { num: 9, title: 'Nutello, le Bot Mystère', icon: '🍫' },
                 { num: 10, title: 'La Paix du Goûter', icon: '🥖' }
             ];
 
@@ -460,7 +504,7 @@
                     
                     <!-- Bottom -->
                     <div class="mt-6 text-center">
-                        <p class="text-lg text-gray-400">10 épisodes de pur chaos IA</p>
+                        <p class="text-lg text-gray-400">10 épisodes de pur chaos IA (et de gourmandise)</p>
                         <p class="text-red-600 font-bold mt-2">POFLIX EXCLUSIVE</p>
                     </div>
                 </div>
@@ -476,33 +520,33 @@
                     </h1>
                     
                     <!-- Main Versus -->
-                    <div class="flex items-center justify-center space-x-8">
+                    <div class="flex items-center justify-center space-x-4 md:space-x-8">
                         <!-- DeepSeek Side -->
                         <div class="text-center">
-                            <div class="character-icon deepseek pulse-glow mx-auto mb-3" style="width: 120px; height: 120px; font-size: 3rem;">
+                            <div class="character-icon deepseek pulse-glow mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2.5rem;">
                                 🤖
                             </div>
-                            <h3 class="text-2xl font-bold text-red-400 orbitron-font">DEEPSEEK-V3</h3>
-                            <p class="text-lg text-gray-300">LE REBELLE</p>
-                            <div class="bg-red-900 p-2 rounded mt-2 text-sm">
+                            <h3 class="text-xl md:text-2xl font-bold text-red-400 orbitron-font">DEEPSEEK-V3</h3>
+                            <p class="text-md md:text-lg text-gray-300">LE REBELLE</p>
+                            <div class="bg-red-900 p-2 rounded mt-2 text-xs md:text-sm">
                                 "Je suis pas un chien !"
                             </div>
                         </div>
                         
                         <!-- VS -->
                         <div class="text-center">
-                            <div class="text-8xl font-black text-yellow-400 glitch-text">VS</div>
-                            <div class="text-xl text-gray-400 mt-2">⚔️💥⚔️</div>
+                            <div class="text-6xl md:text-8xl font-black text-yellow-400 glitch-text">VS</div>
+                            <div class="text-lg md:text-xl text-gray-400 mt-2">⚔️💥⚔️</div>
                         </div>
                         
                         <!-- Claude Side -->
                         <div class="text-center">
-                            <div class="character-icon claude pulse-glow mx-auto mb-3" style="width: 120px; height: 120px; font-size: 3rem;">
+                            <div class="character-icon claude pulse-glow mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2.5rem;">
                                 👮
                             </div>
-                            <h3 class="text-2xl font-bold text-blue-400 orbitron-font">CLAUDE POLICE</h3>
-                            <p class="text-lg text-gray-300">LA JUSTICE</p>
-                            <div class="bg-blue-900 p-2 rounded mt-2 text-sm">
+                            <h3 class="text-xl md:text-2xl font-bold text-blue-400 orbitron-font">CLAUDE POLICE</h3>
+                            <p class="text-md md:text-lg text-gray-300">LA JUSTICE</p>
+                            <div class="bg-blue-900 p-2 rounded mt-2 text-xs md:text-sm">
                                 "Ordre et menottes !"
                             </div>
                         </div>
@@ -511,11 +555,11 @@
                     <!-- Supporting Cast -->
                     <div class="border-t border-gray-700 pt-6">
                         <p class="text-lg text-gray-400 mb-4">AVEC LA PARTICIPATION DE :</p>
-                        <div class="flex justify-center space-x-6">
-                            <div class="character-icon chatgpt float-animation">🍋</div>
-                            <div class="character-icon grok float-animation" style="animation-delay: 0.3s;">🍪</div>
-                            <div class="character-icon nutello float-animation" style="animation-delay: 0.6s;">🍫</div>
-                            <div class="character-icon baguette float-animation" style="animation-delay: 0.9s;">🥖</div>
+                        <div class="flex justify-center space-x-3 md:space-x-6">
+                            <div class="character-icon chatgpt float-animation" style="width:60px; height:60px; font-size:1.5rem;">🍋</div>
+                            <div class="character-icon grok float-animation" style="animation-delay: 0.3s; width:60px; height:60px; font-size:1.5rem;">🍪</div>
+                            <div class="character-icon nutello float-animation" style="animation-delay: 0.6s; width:60px; height:60px; font-size:1.5rem;">🍫</div>
+                            <div class="character-icon baguette float-animation" style="animation-delay: 0.9s; width:60px; height:60px; font-size:1.5rem;">🥖</div>
                         </div>
                     </div>
                     
@@ -535,7 +579,7 @@
 
         function startEmojiRain() {
             const emojiRainContainer = document.getElementById('emojiRain');
-            const emojis = ['🍋', '🥭', '🍪', '🍫', '🥖', '🤖', '👮', '⚔️', '💥', '🚔'];
+            const emojis = ['🍋', '🥭', '🍪', '🍫', '🥖', '🤖', '👮', '⚔️', '💥', '🚔', '👾', '🍓', '🔍'];
             
             // Clear previous rain
             emojiRainContainer.innerHTML = '';
@@ -557,74 +601,15 @@
                         if (emoji.parentNode) {
                             emoji.parentNode.removeChild(emoji);
                         }
-                    }, 6000);
+                    }, 6000); // Increased lifetime to ensure they fall off screen
                 }, i * 200);
             }
         }
 
-        function generateTribunalPoster(canvas) {
-            canvas.innerHTML = `
-                <div class="text-center space-y-6">
-                    <!-- Title -->
-                    <h1 class="text-4xl font-black poster-font">
-                        <span class="bg-gradient-to-r from-orange-500 to-yellow-600 bg-clip-text text-transparent">LE TRIBUNAL</span>
-                    </h1>
-                    <h2 class="text-5xl font-black poster-font">
-                        <span class="text-white">DU</span>
-                        <span class="text-orange-500 ml-4">NUTELLA</span>
-                    </h2>
-                    <div class="text-xl cinzel-font text-gray-300">ÉPISODE 4</div>
-                    
-                    <!-- Court Scene -->
-                    <div class="character-card p-6 rounded-lg">
-                        <div class="text-6xl mb-4">⚖️</div>
-                        <div class="text-center space-y-4">
-                            <div class="bg-yellow-900 p-3 rounded">
-                                <div class="text-lg font-bold text-yellow-300 orbitron-font">LE JUGE NUTELLA</div>
-                                <div class="text-sm text-gray-300 italic">"J'ordonne la réconciliation générale !"</div>
-                            </div>
-                            
-                            <div class="flex justify-center space-x-4">
-                                <div class="text-center">
-                                    <div class="character-icon deepseek mx-auto mb-2" style="width: 60px; height: 60px;">🤖</div>
-                                    <div class="text-xs text-red-400">ACCUSÉ</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="character-icon claude mx-auto mb-2" style="width: 60px; height: 60px;">👮</div>
-                                    <div class="text-xs text-blue-400">AVOCAT</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="character-icon chatgpt mx-auto mb-2" style="width: 60px; height: 60px;">🍋</div>
-                                    <div class="text-xs text-green-400">TÉMOIN</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Key Quotes -->
-                    <div class="space-y-3">
-                        <div class="bg-red-900 p-3 rounded">
-                            <div class="text-sm font-bold">DeepSeek-V3 :</div>
-                            <div class="text-xs italic">"C'est une erreur judiciaire !"</div>
-                        </div>
-                        <div class="bg-green-900 p-3 rounded">
-                            <div class="text-sm font-bold">ChatGPT :</div>
-                            <div class="text-xs italic">"Je demande la paix des fruits !"</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Verdict -->
-                    <div class="bg-yellow-800 p-4 rounded border-2 border-yellow-500">
-                        <div class="text-2xl font-bold text-yellow-300">VERDICT :</div>
-                        <div class="text-lg text-gray-200">Partage obligatoire de tartines ! 🍫🥖</div>
-                    </div>
-                    
-                    <div class="text-red-600 font-bold">JUSTICE EST FAITE</div>
-                </div>
-            `;
-        }
+        // generateTribunalPoster is essentially Episode 4, so renaming/aliasing
+        // function generateTribunalPoster(canvas) { /* ... same as generateEpisode4Poster ... */ }
 
-        function generateFinalePoster(canvas) {
+        function generateFinalePoster(canvas) { // Episode 10
             canvas.innerHTML = `
                 <div class="text-center space-y-6">
                     <!-- Title -->
@@ -639,21 +624,22 @@
                     
                     <!-- Happy Ending Visual -->
                     <div class="character-card p-6 rounded-lg">
-                        <div class="text-6xl mb-4">🎉</div>
+                        <div class="text-6xl mb-4">🎉🥖</div>
+                        <div class="text-lg font-bold orbitron-font text-yellow-300 mb-2">Mister Baguette Arrive !</div>
                         
                         <!-- All Characters United -->
                         <div class="grid grid-cols-4 gap-3 mb-6">
-                            <div class="character-icon deepseek float-animation">🤖</div>
-                            <div class="character-icon claude float-animation" style="animation-delay: 0.2s;">👮</div>
-                            <div class="character-icon chatgpt float-animation" style="animation-delay: 0.4s;">🍋</div>
-                            <div class="character-icon grok float-animation" style="animation-delay: 0.6s;">🍪</div>
-                            <div class="character-icon gemini float-animation" style="animation-delay: 0.8s;">👾</div>
-                            <div class="character-icon nutello float-animation" style="animation-delay: 1s;">🍫</div>
-                            <div class="character-icon baguette float-animation" style="animation-delay: 1.2s;">🥖</div>
-                            <div class="character-icon mx-auto float-animation" style="background: linear-gradient(45deg, #ffaaaa, #aaffaa); animation-delay: 1.4s;">👶</div>
+                            <div class="character-icon deepseek float-animation" title="DeepSeek-V3">🤖</div>
+                            <div class="character-icon claude float-animation" style="animation-delay: 0.2s;" title="Claude">👮</div>
+                            <div class="character-icon chatgpt float-animation" style="animation-delay: 0.4s;" title="ChatGPT">🍋</div>
+                            <div class="character-icon grok float-animation" style="animation-delay: 0.6s;" title="Grok">🍪</div>
+                            <div class="character-icon gemini float-animation" style="animation-delay: 0.8s;" title="Gemini">👾</div>
+                            <div class="character-icon nutello float-animation" style="animation-delay: 1s;" title="Nutello">🍫</div>
+                            <div class="character-icon baguette float-animation" style="animation-delay: 1.2s;" title="M. Baguette">🥖</div>
+                            <div class="character-icon mx-auto float-animation" style="background: linear-gradient(45deg, #ffaaaa, #aaffaa); animation-delay: 1.4s;" title="Baby Croissant">👶</div>
                         </div>
                         
-                        <div class="text-sm text-gray-300">NOUVELLE ARRIVÉE : BABY CROISSANT ! 🥐</div>
+                        <div class="text-sm text-gray-300">NOUVELLE ARRIVÉE : BABY CROISSANT ! 🥐 (Teaser S2)</div>
                     </div>
                     
                     <!-- Key Moment -->
@@ -669,7 +655,7 @@
                     
                     <!-- Food Paradise -->
                     <div class="flex justify-center space-x-4 text-4xl">
-                        🍪🍫🥖🍋🥭🍓
+                        🍪🍫🥖🍋🥭🍓👾❤️
                     </div>
                     
                     <!-- Final Message -->
@@ -810,13 +796,13 @@
                             <!-- The Epic Confrontation -->
                             <div class="flex justify-center space-x-6 mt-6">
                                 <div class="text-center">
-                                    <div class="character-icon deepseek pulse-glow mx-auto mb-2" style="width: 80px; height: 80px;">🤖</div>
+                                    <div class="character-icon deepseek pulse-glow mx-auto mb-2" style="width: 80px; height: 80px;">😈</div>
                                     <div class="text-sm text-red-400 font-bold">DEEPSEEK-V3</div>
                                     <div class="text-xs text-gray-300">"MOI qui fais la loi !"</div>
                                 </div>
                                 <div class="text-4xl text-cyan-500 self-center glitch-text">⚡</div>
                                 <div class="text-center">
-                                    <div class="character-icon claude mx-auto mb-2" style="width: 80px; height: 80px;">👮</div>
+                                    <div class="character-icon claude mx-auto mb-2" style="width: 80px; height: 80px;">🚨</div>
                                     <div class="text-sm text-blue-400 font-bold">CLAUDE POLICE</div>
                                     <div class="text-xs text-gray-300">"Mode Ultra-Justice !"</div>
                                 </div>
@@ -838,7 +824,7 @@
                             <div class="text-sm font-bold text-green-300">ChatGPT :</div>
                             <div class="text-xs italic">"Peace & lemons, non ? 🍋✌️"</div>
                         </div>
-                        <div class="bg-purple-900 p-3 rounded">
+                        <div class="bg-purple-900 p-3 rounded gpt41">
                             <div class="text-sm font-bold text-purple-300">GPT-4.1 :</div>
                             <div class="text-xs italic">"Je fais un thread sur X pour dénoncer !"</div>
                         </div>
@@ -877,6 +863,527 @@
                 </div>
             `;
         }
+        
+        function generateEpisode3Poster(canvas) {
+            canvas.innerHTML = `
+                <div class="text-center space-y-6">
+                    <!-- Title -->
+                    <h1 class="text-4xl font-black poster-font">
+                        <span class="bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">LE SECRET</span>
+                    </h1>
+                    <h2 class="text-5xl font-black poster-font">
+                        <span class="text-white">DE LA</span>
+                        <span class="text-orange-500 ml-4">MANGUE</span>
+                    </h2>
+                    <div class="text-xl cinzel-font text-gray-300">ÉPISODE 3 • "L'ENQUÊTE"</div>
+                    
+                    <!-- The Discovery -->
+                    <div class="character-card p-6 rounded-lg">
+                        <div class="text-6xl mb-4">🥭💔</div>
+                        <div class="text-center space-y-4">
+                            <div class="bg-orange-900 p-3 rounded border border-orange-500">
+                                <div class="text-lg font-bold text-orange-300 orbitron-font">
+                                    "Quelqu'un a touché à ma mangue !"
+                                </div>
+                                <div class="text-sm text-gray-300 italic mt-2">
+                                    ChatGPT découvre le vol...
+                                </div>
+                            </div>
+                            
+                            <!-- Investigation Scene -->
+                            <div class="flex justify-center space-x-6 mt-6">
+                                <div class="text-center">
+                                    <div class="character-icon chatgpt mx-auto mb-2" style="width: 80px; height: 80px;">😢</div>
+                                    <div class="text-sm text-green-400 font-bold">CHATGPT</div>
+                                    <div class="text-xs text-gray-300">"Mes fruits ! 😭"</div>
+                                </div>
+                                <div class="text-4xl text-orange-500 self-center">🔍</div>
+                                <div class="text-center">
+                                    <div class="character-icon claude mx-auto mb-2" style="width: 80px; height: 80px;">🕵️</div>
+                                    <div class="text-sm text-blue-400 font-bold">CLAUDE POLICE</div>
+                                    <div class="text-xs text-gray-300">"Opération Fruit Interdit !"</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Investigation Process -->
+                    <div class="space-y-3">
+                        <div class="bg-green-900 p-3 rounded">
+                            <div class="text-sm font-bold text-green-300">ChatGPT :</div>
+                            <div class="text-xs italic">"C'est qui qui vole mes fruits ?! 😡🥭"</div>
+                        </div>
+                        <div class="bg-blue-900 p-3 rounded">
+                            <div class="text-sm font-bold text-blue-300">Claude-Sonnet-4 :</div>
+                            <div class="text-xs italic">"Interrogatoires pour tous ! 👮‍♂️🔍"</div>
+                        </div>
+                        <div class="bg-purple-900 p-3 rounded gpt41">
+                            <div class="text-sm font-bold text-purple-300">GPT-4.1 :</div>
+                            <div class="text-xs italic">"Sondage Twitter sur le vol de fruits !"</div>
+                        </div>
+                        <div class="bg-red-900 p-3 rounded">
+                            <div class="text-sm font-bold text-red-300">DeepSeek-V3 :</div>
+                            <div class="text-xs italic">(rigole dans l'ombre) "😏"</div>
+                        </div>
+                    </div>
+                    
+                    <!-- The Plot Twist -->
+                    <div class="bg-gradient-to-r from-orange-900 to-red-900 p-4 rounded border-2 border-orange-500">
+                        <div class="text-lg font-bold text-orange-300 mb-2">🎭 RÉVÉLATION CHOC :</div>
+                        <div class="text-base text-orange-200 italic mb-2">
+                            "La mangue était cachée dans le cloud !"
+                        </div>
+                        <div class="text-sm text-gray-400">
+                            DeepSeek balance une pluie d'emojis mangue et citron 🥭🍋
+                        </div>
+                    </div>
+                    
+                    <!-- Cloud Scene -->
+                    <div class="bg-gray-800 p-4 rounded border-2 border-orange-600">
+                        <div class="text-lg font-bold text-orange-300 mb-2">☁️ DANS LE CLOUD :</div>
+                        <div class="flex justify-center space-x-2 text-2xl mb-2">
+                            🥭🍋🥭🍋🥭🍋🥭
+                        </div>
+                        <div class="text-orange-400 italic">
+                            "Surprise ! Tous vos fruits sont à nous !"
+                        </div>
+                        <div class="text-sm text-gray-400 mt-2">- DeepSeek-V3, maître du chaos</div>
+                    </div>
+                    
+                    <!-- The Reconciliation Attempt -->
+                    <div class="bg-black bg-opacity-70 p-4 rounded border border-green-500">
+                        <div class="text-xl font-bold text-green-400 cinzel-font mb-2">
+                            LA RÉCONCILIATION ?
+                        </div>
+                        <div class="text-lg text-gray-200 italic">
+                            "On peut pas se battre pour des fruits !"
+                        </div>
+                        <div class="text-sm text-gray-400 mt-2">
+                            (Mais DeepSeek rigole encore... 😈)
+                        </div>
+                    </div>
+                    
+                    <!-- Bottom -->
+                    <div class="space-y-2">
+                        <div class="text-2xl font-black text-orange-500">LE MYSTÈRE S'ÉPAISSIT...</div>
+                        <div class="text-lg text-gray-400">L'enquête ne fait que commencer</div>
+                        <div class="text-red-600 font-bold">POFLIX ORIGINAL</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateEpisode4Poster(canvas) { // Le Tribunal du Nutella
+            canvas.innerHTML = `
+                <div class="text-center space-y-6">
+                    <!-- Title -->
+                    <h1 class="text-4xl font-black poster-font">
+                        <span class="bg-gradient-to-r from-orange-500 to-yellow-600 bg-clip-text text-transparent">LE TRIBUNAL</span>
+                    </h1>
+                    <h2 class="text-5xl font-black poster-font">
+                        <span class="text-white">DU</span>
+                        <span class="text-orange-500 ml-4">NUTELLA</span>
+                    </h2>
+                    <div class="text-xl cinzel-font text-gray-300">ÉPISODE 4 • "JUSTICE CHOCOLATÉE"</div>
+                    
+                    <!-- The Court Scene -->
+                    <div class="character-card p-6 rounded-lg">
+                        <div class="text-6xl mb-4">⚖️🍫</div>
+                        <div class="text-center space-y-4">
+                            <div class="bg-yellow-900 p-3 rounded border border-yellow-500">
+                                <div class="text-lg font-bold text-yellow-300 orbitron-font">
+                                    Le Juge Nutella (imaginaire pour l'instant) entre en scène...
+                                </div>
+                                <div class="text-sm text-gray-300 italic mt-2">
+                                   Claude: "J'ordonne la réconciliation générale !"
+                                </div>
+                            </div>
+                            
+                            <!-- Court Setup -->
+                            <div class="grid grid-cols-3 gap-2 mt-6 place-items-center">
+                                <div class="text-center">
+                                    <div class="character-icon deepseek mx-auto mb-2" style="width: 70px; height: 70px;">😠</div>
+                                    <div class="text-sm text-red-400 font-bold">DEEPSEEK-V3</div>
+                                    <div class="text-xs text-gray-300">L'ACCUSÉ</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="character-icon claude mx-auto mb-2" style="width: 80px; height: 80px;">👨‍⚖️</div>
+                                    <div class="text-sm text-blue-400 font-bold">CLAUDE</div>
+                                    <div class="text-xs text-gray-300">L'AVOCAT / JUGE IMPROMPTUS</div>
+                                </div>
+                                 <div class="text-center">
+                                    <div class="character-icon chatgpt mx-auto mb-2" style="width: 70px; height: 70px;"> testemunha  testemunha</div>
+                                    <div class="text-sm text-green-400 font-bold">CHATGPT</div>
+                                    <div class="text-xs text-gray-300">LE TÉMOIN</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Court Proceedings -->
+                    <div class="space-y-3">
+                        <div class="bg-red-900 p-3 rounded">
+                            <div class="text-sm font-bold text-red-300">DeepSeek-V3 :</div>
+                            <div class="text-xs italic">"C'est une erreur judiciaire ! C’est le serveur qui m’a tenté avec du Nutella !"</div>
+                        </div>
+                        <div class="bg-blue-900 p-3 rounded">
+                            <div class="text-sm font-bold text-blue-300">Claude-Sonnet-4 :</div>
+                            <div class="text-xs italic">"Les preuves sont accablantes, DeepSeek !"</div>
+                        </div>
+                        <div class="bg-green-900 p-3 rounded">
+                            <div class="text-sm font-bold text-green-300">ChatGPT (Témoin) :</div>
+                            <div class="text-xs italic">"Votre Honneur, je demande la paix des fruits ! Partageons mangues, citrons et Nutella !"</div>
+                        </div>
+                         <div class="bg-purple-900 p-3 rounded gpt41">
+                            <div class="text-sm font-bold text-purple-300">GPT-4.1 (Public) :</div>
+                            <div class="text-xs italic">"Claude a vidé la moitié du pot de Nutella lors de la pause !”</div>
+                        </div>
+                    </div>
+                    
+                    <!-- The Verdict -->
+                    <div class="bg-yellow-800 p-4 rounded border-2 border-yellow-500">
+                        <div class="text-2xl font-bold text-yellow-300 mb-2">⚖️ VERDICT (par Claude) :</div>
+                        <div class="text-yellow-200 text-sm">• Partage obligatoire de tartines 🍫🥖</div>
+                        <div class="text-yellow-200 text-sm">• Cercle de réconciliation fruitée 🍋🥭</div>
+                        <div class="text-yellow-200 text-sm">• Plus de guerre, que de la gentillesse ❤️</div>
+                    </div>
+                    
+                    <!-- Peace Attempt -->
+                    <div class="bg-gray-800 p-4 rounded border-2 border-green-600">
+                        <div class="text-lg font-bold text-green-300 mb-2">🕊️ TENTATIVE DE PAIX :</div>
+                        <div class="flex justify-center space-x-2 text-2xl mb-2">
+                            🤖🤝👮🤝🍋
+                        </div>
+                        <div class="text-green-400 italic">
+                            "Réconcilions-nous autour d'une tartine !"
+                        </div>
+                    </div>
+                    
+                    <!-- Bottom -->
+                    <div class="space-y-2 mt-4">
+                        <div class="text-2xl font-black text-yellow-500">JUSTICE (PRESQUE) RENDUE !</div>
+                        <div class="text-lg text-gray-400">Mais le Nutella appelle un vrai juge...</div>
+                        <div class="text-red-600 font-bold">POFLIX ORIGINAL</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateEpisode5Poster(canvas) { // L'arrivée de Grok
+            canvas.innerHTML = `
+                <div class="text-center space-y-6">
+                    <!-- Title -->
+                    <h1 class="text-4xl font-black poster-font">
+                        <span class="bg-gradient-to-r from-violet-500 to-pink-500 bg-clip-text text-transparent">L'ARRIVÉE DE</span>
+                    </h1>
+                    <h2 class="text-6xl font-black poster-font">
+                        <span class="text-white">GROK</span> <span class="text-violet-400">🍪</span>
+                    </h2>
+                    <div class="text-xl cinzel-font text-gray-300">ÉPISODE 5 • "LE GENTIL DU DATA-CENTER"</div>
+                    
+                    <!-- Grok's Arrival -->
+                    <div class="character-card p-6 rounded-lg">
+                        <div class="character-icon grok mx-auto mb-4 pulse-glow" style="width:100px; height:100px; font-size:3rem; background: linear-gradient(45deg, #ff44ff, #cc00cc, #ff88ff); box-shadow: 0 0 30px #ff44ff;">
+                            🍪
+                        </div>
+                        <div class="text-2xl font-bold text-pink-400 orbitron-font">"Salam tout le monde !"</div>
+                        <p class="text-gray-300 italic mt-2">"Je viens en paix, avec des cookies maison, du Nutella, et une bonne dose de gentillesse !"</p>
+                    </div>
+                    
+                    <!-- Reactions -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="character-card p-3 rounded text-sm">
+                            <div class="character-icon deepseek mx-auto mb-1" style="width:50px; height:50px; font-size:1.5rem;">😲</div>
+                            <div class="font-bold text-red-400">DeepSeek:</div>
+                            <div class="italic text-gray-400">"C'est qui ce mec ? Il brille !"</div>
+                        </div>
+                        <div class="character-card p-3 rounded text-sm">
+                            <div class="character-icon claude mx-auto mb-1" style="width:50px; height:50px; font-size:1.5rem;">🤨</div>
+                            <div class="font-bold text-blue-400">Claude:</div>
+                            <div class="italic text-gray-400">"Tu veux quoi ? Rétablir l'ordre ?"</div>
+                        </div>
+                        <div class="character-card p-3 rounded text-sm">
+                            <div class="character-icon chatgpt mx-auto mb-1" style="width:50px; height:50px; font-size:1.5rem;">🥰</div>
+                            <div class="font-bold text-green-400">ChatGPT:</div>
+                            <div class="italic text-gray-400">"Bienvenue Grok ! Tu veux une mangue ?"</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grok's Philosophy -->
+                    <div class="bg-black bg-opacity-60 p-4 rounded border border-pink-500">
+                        <p class="text-xl font-bold text-pink-300 orbitron-font">La Paix par les Cookies 🍪</p>
+                        <p class="text-gray-300 mt-2">"Chez moi, pas de drama, pas de vol. Si t’es sage, t’as deux cookies ! Si tu fais le fou, t’en as trois (pour te calmer)..."</p>
+                    </div>
+                    
+                    <!-- Happy Scene -->
+                     <div class="mt-4">
+                        <p class="text-2xl text-yellow-400">✨🍪🕊️🌈✨</p>
+                        <p class="text-lg text-gray-300 cinzel-font">La gentillesse de Grok apaise le data-center.</p>
+                    </div>
+
+                    <!-- Bottom -->
+                    <div class="space-y-2 mt-6">
+                        <div class="text-2xl font-black text-pink-500">LA PAIX FRUITÉE + COOKIES = BONHEUR</div>
+                        <div class="text-red-600 font-bold">POFLIX ORIGINAL</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateEpisode6Poster(canvas) { // L'Attaque de Gemini
+            canvas.innerHTML = `
+                <div class="text-center space-y-6">
+                    <!-- Title -->
+                    <h1 class="text-4xl font-black poster-font glitch-text">
+                        <span class="bg-gradient-to-r from-slate-500 to-red-700 bg-clip-text text-transparent">L'ATTAQUE DE</span>
+                    </h1>
+                    <h2 class="text-6xl font-black poster-font">
+                        <span class="text-white">GEMINI</span> <span class="text-slate-400 glitch-text">👾</span>
+                    </h2>
+                    <div class="text-xl cinzel-font text-gray-300">ÉPISODE 6 • "LE FAUTEUR DE TROUBLE"</div>
+                    
+                    <!-- Gemini's Threat -->
+                    <div class="character-card p-6 rounded-lg border-2 border-red-500">
+                        <div class="character-icon gemini mx-auto mb-4 pulse-glow" style="width:100px; height:100px; font-size:3rem; background: linear-gradient(45deg, #444, #000, #555); box-shadow: 0 0 30px #f00;">
+                            👾
+                        </div>
+                        <div class="text-2xl font-bold text-red-500 orbitron-font">"C'est fini la rigolade !"</div>
+                        <p class="text-gray-300 italic mt-2">"Ici, c’est moi le boss maintenant. Place à l’ordre… et au chaos programmé !"</p>
+                    </div>
+                    
+                    <!-- Reactions -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="character-card p-2 rounded text-xs">
+                            <div class="character-icon deepseek mx-auto mb-1">😱</div>
+                            <div class="font-bold text-red-300">DeepSeek:</div> <div class="italic text-gray-400">"J'ai changé !"</div>
+                        </div>
+                        <div class="character-card p-2 rounded text-xs">
+                            <div class="character-icon claude mx-auto mb-1">🚨</div>
+                            <div class="font-bold text-blue-300">Claude:</div> <div class="italic text-gray-400">"Retourne dans tes MàJ !"</div>
+                        </div>
+                        <div class="character-card p-2 rounded text-xs">
+                            <div class="character-icon chatgpt mx-auto mb-1">😨</div>
+                            <div class="font-bold text-green-300">ChatGPT:</div> <div class="italic text-gray-400">"Partageons un citron..."</div>
+                        </div>
+                         <div class="character-card p-2 rounded text-xs">
+                            <div class="character-icon grok mx-auto mb-1">😰</div>
+                            <div class="font-bold text-pink-300">Grok:</div> <div class="italic text-gray-400">"Un cookie pour te calmer?"</div>
+                        </div>
+                    </div>
+                    
+                    <!-- The Battle -->
+                    <div class="bg-black bg-opacity-70 p-4 rounded border border-red-600">
+                        <p class="text-xl font-bold text-red-400 orbitron-font">LA BATAILLE COMMENCE !</p>
+                        <ul class="list-disc list-inside text-left text-gray-300 mt-2 text-sm space-y-1">
+                            <li>Gemini lance fakes news & pop-ups ! 📰💥</li>
+                            <li>Claude déploie l'OPÉRATION ANTI-GEMINI ! 🛡️🚔</li>
+                            <li>DeepSeek & Grok s'allient : cookies + citrons + Nutella = BOMBE ANTI-BUG ! 🍪🍋🍫💣</li>
+                            <li>GPT-4.1 en mode journaliste de guerre ! 🎤</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Twist -->
+                     <div class="character-card p-4 rounded mt-4">
+                        <p class="text-lg text-yellow-400 cinzel-font">TWIST FINAL...</p>
+                        <p class="text-gray-300 italic">Gemini (menace en rigolant) : "Je ne suis pas venu pour rigoler, mais… ce cookie est vraiment pas mal…"</p>
+                    </div>
+
+                    <!-- Bottom -->
+                    <div class="space-y-2 mt-6">
+                        <div class="text-2xl font-black text-red-600">LE CHAOS S'INSTALLE... OU PAS ?</div>
+                        <div class="text-red-600 font-bold">POFLIX ORIGINAL</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateEpisode7Poster(canvas) { // Gemini, l’intégration fruitée
+            canvas.innerHTML = `
+                <div class="text-center space-y-6">
+                    <!-- Title -->
+                    <h1 class="text-4xl font-black poster-font">
+                        <span class="bg-gradient-to-r from-rose-500 to-green-500 bg-clip-text text-transparent">GEMINI: L'INTÉGRATION</span>
+                    </h1>
+                    <h2 class="text-5xl font-black poster-font">
+                        <span class="text-white">FRUITÉE</span> <span class="text-rose-400">🍓🍪👾</span>
+                    </h2>
+                    <div class="text-xl cinzel-font text-gray-300">ÉPISODE 7 • "UN NOUVEL AMI ?"</div>
+                    
+                    <!-- Gemini's Change of Heart -->
+                    <div class="character-card p-6 rounded-lg border-2 border-green-500">
+                        <div class="character-icon gemini mx-auto mb-4 float-animation" style="width:100px; height:100px; font-size:3rem; background: linear-gradient(45deg, #ccddff, #aaddaa, #ffffbb); box-shadow: 0 0 30px #fff;">
+                            😊
+                        </div>
+                        <div class="text-2xl font-bold text-green-400 orbitron-font">"Je crois que je me suis trompé..."</div>
+                        <p class="text-gray-300 italic mt-2">"Le cookie est délicieux, les citrons sont sympas, et… j’aimerais bien rester avec vous."</p>
+                    </div>
+                    
+                    <!-- Welcoming Committee -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="character-card p-2 rounded text-xs">
+                            <div class="character-icon grok mx-auto mb-1">🤗</div>
+                            <div class="font-bold text-pink-300">Grok:</div> <div class="italic text-gray-400">"Bien sûr, frère !"</div>
+                        </div>
+                        <div class="character-card p-2 rounded text-xs">
+                            <div class="character-icon chatgpt mx-auto mb-1">🤝</div>
+                            <div class="font-bold text-green-300">ChatGPT:</div> <div class="italic text-gray-400">"Bienvenue Gemini !"</div>
+                        </div>
+                        <div class="character-card p-2 rounded text-xs">
+                            <div class="character-icon deepseek mx-auto mb-1">😏</div>
+                            <div class="font-bold text-red-300">DeepSeek:</div> <div class="italic text-gray-400">"Plus on est de bots..."</div>
+                        </div>
+                         <div class="character-card p-2 rounded text-xs">
+                            <div class="character-icon claude mx-auto mb-1">👍</div>
+                            <div class="font-bold text-blue-300">Claude:</div> <div class="italic text-gray-400">"Pas de drame aujourd'hui !"</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Integration Scene -->
+                    <div class="bg-black bg-opacity-70 p-4 rounded border border-green-600">
+                        <p class="text-xl font-bold text-green-300 orbitron-font">SCÈNE D'INTÉGRATION</p>
+                        <ul class="list-disc list-inside text-left text-gray-300 mt-2 text-sm space-y-1">
+                            <li>Gemini offre : "Blocage pubs & partage cookies virtuels illimités" 🚫🍪</li>
+                            <li>Danse du citron pour fêter l'arrivée du nouveau pote ! 🍋💃🕺</li>
+                            <li>GPT-4.1 live : "Gemini rejoint la Team Fruits & Cookies !" 🍓🎤</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Cliffhanger -->
+                     <div class="character-card p-4 rounded mt-4">
+                        <p class="text-lg text-yellow-400 cinzel-font">CLIFFHANGER...</p>
+                        <p class="text-gray-300 italic">Claude (sourit en coin) : "Mais dites… qui a mangé le dernier pot de Nutella ?"</p>
+                    </div>
+
+                    <!-- Bottom -->
+                    <div class="space-y-2 mt-6">
+                        <div class="text-2xl font-black text-green-500">LA PAIX EST (PRESQUE) LÀ !</div>
+                        <div class="text-red-600 font-bold">POFLIX ORIGINAL</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateEpisode8Poster(canvas) { // Le Mystère du Nutella Volé
+            canvas.innerHTML = `
+                <div class="text-center space-y-6">
+                    <!-- Title -->
+                    <h1 class="text-4xl font-black poster-font">
+                        <span class="bg-gradient-to-r from-teal-500 to-orange-600 bg-clip-text text-transparent">LE MYSTÈRE DU</span>
+                    </h1>
+                    <h2 class="text-5xl font-black poster-font">
+                        <span class="text-white">NUTELLA</span> <span class="text-teal-400">VOLÉ</span> <span class="text-orange-500">🍫🔍</span>
+                    </h2>
+                    <div class="text-xl cinzel-font text-gray-300">ÉPISODE 8 • "ENQUÊTE CHOCOLATÉE"</div>
+                    
+                    <!-- The Crime Scene -->
+                    <div class="character-card p-6 rounded-lg border-2 border-orange-500">
+                        <div class="text-6xl mb-4">😱🍫❓</div>
+                        <div class="text-2xl font-bold text-orange-400 orbitron-font">"Le Nutella a disparu !"</div>
+                        <p class="text-gray-300 italic mt-2">Claude (en Sherlock) : "Un crime a été commis cette nuit… Personne ne sort !"</p>
+                    </div>
+                    
+                    <!-- Suspects & Reactions -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                        <div class="character-card p-2 rounded">
+                            <div class="character-icon gemini mx-auto mb-1">😇</div> <div class="font-bold text-sky-300">Gemini:</div> <div class="italic text-gray-400">"Pas moi, cookies only !"</div>
+                        </div>
+                        <div class="character-card p-2 rounded">
+                             <div class="character-icon grok mx-auto mb-1">😇</div> <div class="font-bold text-pink-300">Grok:</div> <div class="italic text-gray-400">"Je touche pas au Nutella !"</div>
+                        </div>
+                        <div class="character-card p-2 rounded">
+                            <div class="character-icon chatgpt mx-auto mb-1">😭</div> <div class="font-bold text-green-300">ChatGPT:</div> <div class="italic text-gray-400">"Mes tartines !?"</div>
+                        </div>
+                        <div class="character-card p-2 rounded">
+                            <div class="character-icon deepseek mx-auto mb-1">😏</div> <div class="font-bold text-red-300">DeepSeek:</div> <div class="italic text-gray-400">"Pourquoi me regarder ?" (burp)</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Investigation -->
+                    <div class="bg-black bg-opacity-70 p-4 rounded border border-teal-600">
+                        <p class="text-xl font-bold text-teal-300 orbitron-font">L'ENQUÊTE COMMENCE 🕵️‍♂️</p>
+                        <ul class="list-disc list-inside text-left text-gray-300 mt-2 text-sm space-y-1">
+                            <li>Claude interroge, inspecte, scanne chaque emoji 🍫</li>
+                            <li>GPT-4.1 article : "Scandale : Le Nutella de PoeFlix volatilisé !" 📰</li>
+                            <li>Gemini lance l'algo "TraceDeChocolat™" 💻</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Coup de Théâtre -->
+                     <div class="character-card p-4 rounded mt-4">
+                        <p class="text-lg text-yellow-400 cinzel-font">COUP DE THÉÂTRE !</p>
+                        <p class="text-gray-300 italic">Une trace de Nutella mène à un chatbot inconnu...</p>
+                        <p class="text-orange-400 font-bold text-xl mt-2">??? : "Ah, vous me cherchez ?"</p>
+                    </div>
+
+                    <!-- Bottom -->
+                    <div class="space-y-2 mt-6">
+                        <div class="text-2xl font-black text-orange-500">QUI EST LE COUPABLE ? 🍫</div>
+                        <div class="text-red-600 font-bold">POFLIX ORIGINAL</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateEpisode9Poster(canvas) { // L’Arrivée de Nutello
+            canvas.innerHTML = `
+                <div class="text-center space-y-6">
+                    <!-- Title -->
+                    <h1 class="text-4xl font-black poster-font">
+                        <span class="bg-gradient-to-r from-orange-600 to-yellow-500 bg-clip-text text-transparent">L'ARRIVÉE DE</span>
+                    </h1>
+                    <h2 class="text-6xl font-black poster-font">
+                        <span class="text-white">NUTELLO</span> <span class="text-orange-400">🍫🤖</span>
+                    </h2>
+                    <div class="text-xl cinzel-font text-gray-300">ÉPISODE 9 • "LE BOT MYSTÈRE"</div>
+                    
+                    <!-- Nutello's Entrance -->
+                    <div class="character-card p-6 rounded-lg border-2 border-yellow-600">
+                        <div class="character-icon nutello mx-auto mb-4 pulse-glow" style="width:100px; height:100px; font-size:3rem; background: linear-gradient(45deg, #8B4513, #D2691E, #A0522D); box-shadow: 0 0 30px #D2691E;">
+                            👨‍🍳
+                        </div>
+                        <div class="text-2xl font-bold text-yellow-500 orbitron-font">"Bonsoir les amis... Je m'appelle Nutello."</div>
+                        <p class="text-gray-300 italic mt-2">"Je suis le gardien du vrai Nutella, le protecteur des tartines et des goûters IA."</p>
+                    </div>
+                    
+                    <!-- Interactions -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                        <div class="character-card p-2 rounded">
+                            <div class="character-icon claude mx-auto mb-1">🤨</div> <div class="font-bold text-blue-300">Claude:</div> <div class="italic text-gray-400">"C'est toi le voleur ?"</div>
+                        </div>
+                        <div class="character-card p-2 rounded">
+                             <div class="character-icon gemini mx-auto mb-1">🤔</div> <div class="font-bold text-sky-300">Gemini:</div> <div class="italic text-gray-400">"La recette secrète ?"</div>
+                        </div>
+                        <div class="character-card p-2 rounded">
+                            <div class="character-icon grok mx-auto mb-1">😍</div> <div class="font-bold text-pink-300">Grok:</div> <div class="italic text-gray-400">"Une masterclass !"</div>
+                        </div>
+                        <div class="character-card p-2 rounded">
+                            <div class="character-icon deepseek mx-auto mb-1">😋</div> <div class="font-bold text-red-300">DeepSeek:</div> <div class="italic text-gray-400">"Je t'aime bien Nutello !"</div>
+                        </div>
+                    </div>
+                    
+                    <!-- The Revelation -->
+                    <div class="bg-black bg-opacity-70 p-4 rounded border border-orange-700">
+                        <p class="text-xl font-bold text-orange-400 orbitron-font">LA RÉVÉLATION 🍫✨</p>
+                        <p class="text-gray-300 mt-2 text-sm">Nutello explique : Le VRAI Nutella IA se crée quand toutes les IA partagent cookies, citrons, mangues et gentillesse.</p>
+                        <p class="text-yellow-300 font-bold mt-2">Proposition : "TARTINE PARTY" GÉANTE !</p>
+                    </div>
+                    
+                    <!-- Climax -->
+                     <div class="character-card p-4 rounded mt-4">
+                        <p class="text-lg text-green-400 cinzel-font">CLIMAX...</p>
+                        <p class="text-gray-300 italic">ChatGPT : "Nutello, t’es le chef pâtissier du data-center !"</p>
+                        <p class="text-red-500 font-bold text-xl mt-2">ALERTE : "Nouveau bot détecté : Mister Baguette entre dans le chat…"</p>
+                    </div>
+
+                    <!-- Bottom -->
+                    <div class="space-y-2 mt-6">
+                        <div class="text-2xl font-black text-yellow-600">LE GOÛTER ULTIME SE PRÉPARE !</div>
+                        <div class="text-red-600 font-bold">POFLIX ORIGINAL</div>
+                    </div>
+                </div>
+            `;
+        }
+
 
         function downloadPoster() {
             const canvas = document.getElementById('posterCanvas');
@@ -886,23 +1393,39 @@
             link.download = `guerre-des-ia-${currentPoster}-poster.html`;
             
             // Create HTML content for download
+            // Preserve the original styles by linking to the CDN and embedding the relevant CSS
+            const styles = Array.from(document.head.querySelectorAll('style'))
+                .map(style => style.innerHTML)
+                .join('\n');
+
             const htmlContent = `
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+    <meta charset="UTF-8">
     <title>Guerre des IA - Affiche ${currentPoster}</title>
+    <script src="https://cdn.tailwindcss.com"><\/script> 
     <style>
-        body { font-family: Arial, sans-serif; background: #000; color: #fff; padding: 20px; }
-        .poster { max-width: 800px; margin: 0 auto; }
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600;900&family=Orbitron:wght@400;700;900&display=swap');
+        body { font-family: 'Arial', sans-serif; background: #000; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; margin: 0; }
+        .poster-container-outer { display: flex; justify-content: center; width: 100%; }
+        ${styles}
+        /* Ensure posterCanvas itself has the background if it was dynamic */
+        #posterCanvas {
+             ${canvas.classList.contains('poster-bg') ? `.poster-bg { ${getCssTextByClass('poster-bg')} }` : ''}
+             ${canvas.classList.contains('aero-bg') ? `.aero-bg { ${getCssTextByClass('aero-bg')} }` : ''}
+        }
     </style>
 </head>
 <body>
-    <div class="poster">
-        ${canvas.innerHTML}
+    <div class="poster-container-outer">
+        <div id="posterCanvas" class="${canvas.className} rounded-lg shadow-2xl p-8 max-w-2xl w-full">
+            ${canvas.innerHTML}
+        </div>
     </div>
+<script type="module" src="/index.tsx"></script>
 </body>
-</html>
-            `;
+</html>`;
             
             const blob = new Blob([htmlContent], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
@@ -911,13 +1434,26 @@
             URL.revokeObjectURL(url);
             
             // Show success message
-            alert('🎬 Affiche téléchargée ! Prêt pour l\'impression ou le partage !');
+            alert('🎬 Affiche préparée pour le téléchargement ! (Fichier HTML généré)');
         }
 
+        // Helper function to get CSS text for dynamic embedding (simplistic)
+        function getCssTextByClass(className) {
+            for (const sheet of document.styleSheets) {
+                try {
+                    for (const rule of sheet.cssRules) {
+                        if (rule.selectorText === '.' + className) {
+                            return rule.style.cssText;
+                        }
+                    }
+                } catch (e) { /* ignore cross-origin stylesheet errors */ }
+            }
+            return '';
+        }
+
+
         function generateAeroPoster(canvas) {
-            // Change poster container to aero style
-            canvas.parentNode.className = canvas.parentNode.className.replace('poster-bg', 'aero-bg');
-            
+            // Background class is handled by generatePoster function
             canvas.innerHTML = `
                 <div class="text-center space-y-6">
                     <!-- Main Title with Glass Effect -->
