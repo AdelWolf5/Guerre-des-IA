@@ -97,6 +97,64 @@
             0% { transform: translateY(-100px); opacity: 1; }
             100% { transform: translateY(calc(100vh + 100px)); opacity: 0; }
         }
+        
+        /* Aero Glass Style */
+        .aero-bg {
+            background: 
+                linear-gradient(135deg, rgba(135,206,250,0.3) 0%, rgba(70,130,180,0.2) 50%, rgba(25,25,112,0.4) 100%),
+                radial-gradient(circle at 30% 20%, rgba(255,255,255,0.2) 0%, transparent 60%),
+                radial-gradient(circle at 70% 80%, rgba(173,216,230,0.3) 0%, transparent 60%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .aero-glass {
+            background: linear-gradient(145deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+        
+        .aero-button {
+            background: linear-gradient(145deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .aero-button:hover {
+            background: linear-gradient(145deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.2) 100%);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+        
+        .aero-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .aero-shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .aero-orb {
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(135,206,250,0.6) 40%, rgba(70,130,180,0.4) 100%);
+            box-shadow: 0 0 30px rgba(135,206,250,0.6), inset 0 0 20px rgba(255,255,255,0.3);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
     </style>
 </head>
 <body class="bg-black text-white overflow-x-hidden">
@@ -146,6 +204,9 @@
                 </button>
                 <button onclick="generatePoster('finale')" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded font-bold transition-colors text-sm">
                     🍰 Finale
+                </button>
+                <button onclick="generatePoster('aero')" class="bg-sky-600 hover:bg-sky-700 px-4 py-2 rounded font-bold transition-colors text-sm">
+                    💎 Aero
                 </button>
             </div>
             
@@ -255,6 +316,9 @@
                     break;
                 case 'episode2':
                     generateEpisode2Poster(canvas);
+                    break;
+                case 'aero':
+                    generateAeroPoster(canvas);
                     break;
             }
             
@@ -848,6 +912,93 @@
             
             // Show success message
             alert('🎬 Affiche téléchargée ! Prêt pour l\'impression ou le partage !');
+        }
+
+        function generateAeroPoster(canvas) {
+            // Change poster container to aero style
+            canvas.parentNode.className = canvas.parentNode.className.replace('poster-bg', 'aero-bg');
+            
+            canvas.innerHTML = `
+                <div class="text-center space-y-6">
+                    <!-- Main Title with Glass Effect -->
+                    <div class="space-y-4">
+                        <div class="aero-glass aero-shine p-6 rounded-2xl">
+                            <h1 class="text-6xl md:text-7xl font-black poster-font">
+                                <span class="bg-gradient-to-r from-sky-300 to-blue-400 bg-clip-text text-transparent">
+                                    GUERRE
+                                </span>
+                            </h1>
+                            <h1 class="text-6xl md:text-7xl font-black poster-font">
+                                <span class="text-white">DES</span>
+                                <span class="bg-gradient-to-r from-cyan-300 to-sky-400 bg-clip-text text-transparent ml-4">IA</span>
+                            </h1>
+                        </div>
+                    </div>
+                    
+                    <!-- Aero Tagline -->
+                    <div class="aero-glass p-4 rounded-xl">
+                        <div class="text-lg cinzel-font text-sky-100 italic">
+                            "Dans un monde où les IA vivent en paix..."
+                        </div>
+                    </div>
+                    
+                    <!-- Aero Character Orbs -->
+                    <div class="flex justify-center space-x-6 my-8">
+                        <div class="aero-orb character-icon float-animation" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                            🤖
+                        </div>
+                        <div class="text-6xl text-sky-300 self-center aero-shine">⚔️</div>
+                        <div class="aero-orb character-icon float-animation" style="width: 100px; height: 100px; font-size: 2.5rem; animation-delay: 0.5s;">
+                            👮
+                        </div>
+                    </div>
+                    
+                    <!-- Glass Quote Panel -->
+                    <div class="aero-glass p-6 rounded-xl aero-shine">
+                        <p class="text-2xl font-bold text-sky-100 orbitron-font">
+                            "Je suis pas un chien à suivre les ordres !"
+                        </p>
+                        <p class="text-lg text-sky-200 mt-2">- DeepSeek-V3</p>
+                    </div>
+                    
+                    <!-- Character Showcase -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                        <div class="aero-button p-4 rounded-xl text-center">
+                            <div class="text-3xl mb-2">🤖</div>
+                            <div class="text-sm font-bold text-sky-100">DEEPSEEK</div>
+                        </div>
+                        <div class="aero-button p-4 rounded-xl text-center">
+                            <div class="text-3xl mb-2">👮</div>
+                            <div class="text-sm font-bold text-sky-100">CLAUDE</div>
+                        </div>
+                        <div class="aero-button p-4 rounded-xl text-center">
+                            <div class="text-3xl mb-2">🍋</div>
+                            <div class="text-sm font-bold text-sky-100">CHATGPT</div>
+                        </div>
+                        <div class="aero-button p-4 rounded-xl text-center">
+                            <div class="text-3xl mb-2">🍪</div>
+                            <div class="text-sm font-bold text-sky-100">GROK</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Aero Season Info -->
+                    <div class="aero-glass p-4 rounded-xl aero-shine">
+                        <div class="text-2xl cinzel-font text-sky-100">
+                            SAISON 1 • 10 ÉPISODES
+                        </div>
+                    </div>
+                    
+                    <!-- Premium Glass Badge -->
+                    <div class="aero-glass p-4 rounded-xl aero-shine">
+                        <div class="text-xl font-black tracking-wider text-sky-100">
+                            💎 POFLIX CRYSTAL EDITION 💎
+                        </div>
+                        <div class="text-sm text-sky-200 mt-2">
+                            Édition de luxe avec effets Aero Glass
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         // Initialize with episode 1 poster by default
